@@ -14,12 +14,13 @@ SRC = ./src/main.c \
 		./src/control.c \
 		./src/control2.c \
 		./src/window_utils.c \
-		./src/image_utils.c
+		./src/image_utils.c \
+		./src/player.c
 
 OBJ = ${SRC:.c=.o}
 
 
-NAME = so_long.a
+NAME = so_long
 HEADER = so_long.h
 LIBFT = ./libft/
 LIBFT_MAKE = Makefile
@@ -52,7 +53,7 @@ ${NAME}:	${OBJ} $(MLX_LIB)
 		make -C ./libft
 		make -C $(MLX_DIR)
 		$(AR) $(NAME) $(OBJ) $(MLX_LIB)
-		$(CC) $(CFLAGS) $(CPPFLAGS) -L$(LIBFT) -o so_long $(OBJ) -lft -lmlx $(MLX_FLAGS)
+		$(CC) $(CFLAGS) $(CPPFLAGS) -L$(LIBFT) -o $(NAME) $(OBJ) -lft -lmlx $(MLX_FLAGS)
 
 $(MLX_DIR)/libmlx_$(UNAME).a:
 	make -C $(MLX_DIR)

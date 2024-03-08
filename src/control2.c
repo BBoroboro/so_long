@@ -28,7 +28,7 @@ t_position	*ft_find_player(t_map *map)
 	while(map->tab[y])
 	{
 		x = 0;
-		while(map->tab[y][x] != '\n')
+		while(map->tab[y] && map->tab[y][x] != '\n')
 		{
 			if ((map->tab[y][x]) == 'P')
 			{

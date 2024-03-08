@@ -143,7 +143,8 @@ int	main(int ac, char **av)
 	valid_path(map);
 
 
-		ft_create_window();
+	ft_draw_map(map);
+	
 	
 
 	ft_free_tab(map->tab);

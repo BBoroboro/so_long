@@ -38,12 +38,14 @@ typedef struct s_img
 {
 	void	*img_ptr;
 	char	*data;
+	void	*textures[5];
 	int		width;
 	int		height;
 	int		bpp;
 	int		size_line;
 	int		endian;
 }		t_img;
+
 // differencitate strut data and struct img
 // typedef struct s_img //these ones could go to the struct img
 // {
@@ -77,6 +79,7 @@ typedef struct s_data
 	int		bits_per_pixel;
 	int		line_length;
 	int 	endian;
+	t_position *player_position;
 	t_map	*map;
 }	t_data;
 
@@ -99,11 +102,16 @@ int	valid_path(t_map *map);
 // window_utils
 int on_destroy(t_data *data);
 int on_keypress(int keysym, t_data *data);
-int	ft_create_window(void);
+int	ft_create_window(t_map *map);
 
 // image utils
 t_img	*load_image(void *mlx_ptr, char *xpm_path);
 void	draw_image(t_img *img, void *mlx_ptr, void *win_ptr, int x, int y);
+int ft_draw_map(t_map *map);
+t_img	*define_image(t_img *img, t_data data);
 
+// player
+void update_player(t_data *data, int px, int py);
+int	deal_key(int key, t_data *data);
 
 #endif

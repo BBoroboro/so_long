@@ -28,7 +28,18 @@ t_img	*load_image(void *mlx_ptr, char *xpm_path)
 	return (img);
 }
 
-void	draw_image(t_img *img, void *mlx_ptr, void *win_ptr)
+void	draw_image(t_img *img, void *mlx_ptr, void *win_ptr, int x, int y)
 {
-	mlx_put_image_to_window(mlx_ptr, win_ptr, img->img_ptr, 0, 0);
+	mlx_put_image_to_window(mlx_ptr, win_ptr, img->img_ptr, x, y);
 }
+
+// t_img	*define_image(t_img *img, void *data)
+// {
+// 	img->textures[0] = load_image(data.mlx_ptr, "./assets/blackwall.xpm");
+// 	if (!img->textures[0])
+// 		return(free(data.mlx_ptr), NULL);
+// 	img->textures[1] = load_image(data.mlx_ptr, "./assets/sky.xpm");
+// 	if (!img->textures[1])
+// 		return(free(data.mlx_ptr), NULL);
+// 	return (img);
+// }
