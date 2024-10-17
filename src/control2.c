@@ -3,57 +3,28 @@
 /*                                                        :::      ::::::::   */
 /*   control2.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamoulin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mamoulin <mamoulin@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/01 13:56:58 by mamoulin          #+#    #+#             */
-/*   Updated: 2024/03/01 13:57:01 by mamoulin         ###   ########.fr       */
+/*   Updated: 2024/03/22 17:10:27 by mamoulin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "so_long.h"
 
-t_position	*ft_find_player(t_map *map)
-{
-	int	x;
-	int	y;
-	t_position *player;
-
-	y = 0;
-	player = malloc(sizeof(t_position));
-	if (!player)
-		{
-			return (NULL);
-		}
-	while(map->tab[y])
-	{
-		x = 0;
-		while(map->tab[y] && map->tab[y][x] != '\n')
-		{
-			if ((map->tab[y][x]) == 'P')
-			{
-				player->x = x;
-				player->y = y;
-			}
-			x++;
-		}
-		y++;
-	}
-	return (player);
-}
-
-char	**ft_copy_map(t_map *map)
+char	**ft_copy_map(t_map *map, t_data *data)
 {
 	size_t	i;
-	char **copy;
-	size_t tab_size;
+	char	**copy;
+	size_t	tab_size;
 
 	tab_size = map->h;
 	i = 0;
 	copy = malloc(sizeof(char *) * (tab_size + 1));
 	if (!copy)
-		return (NULL);
-	while(i < tab_size)
+		exit_error(data, "Error: Malloc\n");
+	while (i < tab_size)
 	{
 		copy[i] = ft_strdup(map->tab[i]);
 		if (!copy)
@@ -69,7 +40,7 @@ char	**ft_copy_map(t_map *map)
 	return (copy);
 }
 
-char **flood_fill(int x, int y, char **copy)
+char	**flood_fill(int x, int y, char **copy)
 {
 	if (copy[y][x] == '0' || copy[y][x] == 'C' || copy[y][x] == 'P')
 		copy[y][x] = 'F';
@@ -83,67 +54,80 @@ char **flood_fill(int x, int y, char **copy)
 		flood_fill(x, y - 1, copy);
 	return (copy);
 }
-int control_fill_final(char **map, int size) // in this case, i cant pass through the exit before collecting all C
-{
-	int x;
-	int y;
-	int c;
-	t_position *exit;
 
-	c = 0;
+int	ft_find_exit(t_data *data)
+{
+	int	x;
+	int	y;
+
 	y = 0;
-	if (!map || !map[y])
-		return (1);
-	exit = malloc(sizeof(t_position));
-	if (!exit)
-	{
-		//free char **map?
-		return (1);
-	}
-	while(y < size)
+	data->map->exit = malloc(sizeof(t_position));
+	if (!data->map->exit)
+		return (ft_printf("Error: malloc\n"), 1);
+	while (data->map->tab[y])
 	{
 		x = 0;
-		while(map[y][x] != '\n')
+		while (data->map->tab[y] && data->map->tab[y][x] != '\0')
 		{
-			if (map[y][x] == 'C')
-				c++;
-			if (map[y][x] == 'E')
-				{
-					exit->x = x;
-					exit->y = y;
-				}
+			if ((data->map->tab[y][x]) == 'E')
+			{
+				data->map->exit->x = x;
+				data->map->exit->y = y;
+			}
 			x++;
 		}
 		y++;
 	}
-	x = exit->x;
-	y = exit->y;
-	free(exit);
-	if (c == 0 && (map[y][x - 1] == 'F' || map[y][x + 1] == 'F' || map[y - 1][x] == 'F' || map[y + 1][x] == 'F'))
-		return (0);
-	return (1);
+	return (0);
 }
-int	valid_path(t_map *map)
-{
-	t_position *player;
-	char **copy;
-	int x;
-	int y;	
 
-	//copy = NULL;
-	player = ft_find_player(map);
-	copy = malloc(sizeof(char *) * (map->h));
+int	control_fill_final(char **map, int size, t_data *data)
+{
+	int	x;
+	int	y;
+	int	c;
+
+	c = 0;
+	y = 0;
+	while (y < size)
+	{
+		x = 0;
+		while (map[y][x] != '\0')
+		{
+			if (map[y][x] == 'C')
+				c++;
+			x++;
+		}
+		y++;
+	}
+	ft_find_exit(data);
+	x = data->map->exit->x;
+	y = data->map->exit->y;
+	free(data->map->exit);
+	if (c == 0 && (map[y][x - 1] == 'F' || map[y][x + 1] == 'F'
+			|| map[y - 1][x] == 'F' || map[y + 1][x] == 'F'))
+		return (0);
+	return (ft_printf("Error: there is no path to victory!\n"), 1);
+}
+
+int	valid_path(t_data *data)
+{
+	char	**copy;
+	int		x;
+	int		y;
+
+	ft_find_player(data);
+	copy = ft_copy_map(data->map, data);
 	if (!copy)
-		return (1);
-	copy = ft_copy_map(map);
-	x = player->x;
-	y = player->y;
+		exit_error(data, "Error: Malloc\n");
+	x = data->player_position->x;
+	y = data->player_position->y;
 	copy = flood_fill(x, y, copy);
-	if (!control_fill_final(copy, map->h))
-		printf("map valid frero\n");
-	else
-		printf("map pas valide frerot\n");
-	ft_free_tab(copy); // if pb in alloc in copy_map here i free NULL...
-	free(player);
-	return (1);
+	if (control_fill_final(copy, data->map->h, data))
+	{
+		ft_free_tab(copy);
+		return (1);
+	}
+	ft_free_tab(copy);
+	return (0);
 }

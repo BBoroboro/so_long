@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mamoulin <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: mamoulin <mamoulin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/08 17:05:33 by mamoulin          #+#    #+#              #
-#    Updated: 2024/02/06 15:31:30 by mamoulin         ###   ########.fr        #
+#    Updated: 2024/03/20 18:18:59 by mamoulin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = ft_isalpha.c \
+SRC_BASE = ft_isalpha.c \
        ft_isdigit.c \
        ft_isalnum.c \
        ft_isascii.c \
@@ -49,9 +49,16 @@ SRC = ft_isalpha.c \
        get_next_line.c \
        get_next_line_utils.c
 
-OBJ = ${SRC:.c=.o}
-
-SRCSBONUS = ft_lstnew.c \
+SRC_PRINTF = ft_printchar.c \
+              ft_printu.c \
+              ft_print_hex.c \
+              ft_printhex_maj.c \
+              ft_print_nbr.c \
+              ft_printpc.c \
+              ft_printptr.c \
+              ft_printf.c \
+              ft_printstr.c
+SRC_BONUS = ft_lstnew.c \
 	    ft_lstadd_front.c \
 	    ft_lstsize.c \
 	    ft_lstlast.c \
@@ -61,12 +68,15 @@ SRCSBONUS = ft_lstnew.c \
 	    ft_lstiter.c \
 	    ft_lstmap.c
 
+SRCS = $(addprefix ./srcs/base/, $(SRC_BASE) $(SRC_BONUS)) \
+       $(addprefix ./srcs/printf/, $(SRC_PRINTF))
 
-OBJSBONUS = ${SRCSBONUS:.c=.o} 
+OBJ = ${SRCS:.c=.o}
 
 NAME = libft.a
 HEADER = libft.h
 CC = cc
+CPPFLAGS = -I./include
 CFLAGS = -Wall -Wextra -Werror -g
 OPTION = -I ${HEADER}
 RM = rm -f
@@ -74,20 +84,16 @@ AR = ar rc
 RN = ranlib
 
 .c.o:
-	${CC} ${CFLAGS} -c $< -o ${<:.c=.o}
+	${CC} $(CPPFLAGS) ${CFLAGS} -c $< -o ${<:.c=.o}
 
 ${NAME}:	${OBJ}
 			${AR} ${NAME} ${OBJ}
 			${RN} ${NAME}
 
-bonus:		${OBJSBONUS}
-			${AR} ${NAME} ${OBJSBONUS}
-			${RN} ${NAME}
-
 all:		${NAME}
 
 clean:
-	${RM} ${OBJ} ${OBJSBONUS}
+	${RM} ${OBJ}
 
 fclean:		clean
 			${RM} ${NAME}

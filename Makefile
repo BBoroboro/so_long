@@ -3,19 +3,25 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mamoulin <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: mamoulin <mamoulin@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/28 14:53:49 by mamoulin          #+#    #+#              #
-#    Updated: 2024/02/28 18:12:56 by mamoulin         ###   ########.fr        #
+#    Updated: 2024/03/22 16:13:48 by mamoulin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC = ./src/main.c \
 		./src/control.c \
 		./src/control2.c \
-		./src/window_utils.c \
+		./src/control3.c \
+		./src/map_utils.c \
+		./src/game_utils.c \
 		./src/image_utils.c \
-		./src/player.c
+		./src/player.c \
+		./src/player2.c \
+		./src/free_functions.c \
+		./src/free_functions2.c \
+		./src/malloc_data.c
 
 OBJ = ${SRC:.c=.o}
 
@@ -28,7 +34,7 @@ MLX_DIR = ./mlx
 MLX_LIB = $(MLX_DIR)/libmlx_$(UNAME).a
 CC = cc
 CFLAGS = -Wall -Werror -Wextra -g3
-CPPFLAGS = -I$(LIBFT) -I$(MLX_DIR) -I.
+CPPFLAGS = -I$(LIBFT) -I$(MLX_DIR) -I./libft/include -I./include
 RM = rm -f
 AR = ar rc
 
@@ -52,7 +58,6 @@ all:		${NAME}
 ${NAME}:	${OBJ} $(MLX_LIB)
 		make -C ./libft
 		make -C $(MLX_DIR)
-		$(AR) $(NAME) $(OBJ) $(MLX_LIB)
 		$(CC) $(CFLAGS) $(CPPFLAGS) -L$(LIBFT) -o $(NAME) $(OBJ) -lft -lmlx $(MLX_FLAGS)
 
 $(MLX_DIR)/libmlx_$(UNAME).a:
